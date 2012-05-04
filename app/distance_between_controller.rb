@@ -1,7 +1,7 @@
 class DistanceBetweenViewController < UIViewController
   PIx = 3.141592653589793
   RADIO = 6371 # Mean radius of Earth in Km
-  
+
   def convertToRadians(val)
    return val * PIx / 180
   end
@@ -37,21 +37,20 @@ class DistanceBetweenViewController < UIViewController
 
     @button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
     @button.frame = CGRectMake 10, 50, 300, 20
-    
+
     @button.setTitle("Find Me", forState:UIControlStateNormal)
 
     @button.addTarget(self , action:"set2nd:", forControlEvents:UIControlEventTouchDown)
-    
+
     view.addSubview @button
 
     # Create the location manager if this object does not
     # already have one.
     @locationManager = CLLocationManager.alloc.init
- 
+
     @locationManager.delegate = self
     @locationManager.desiredAccuracy = KCLLocationAccuracyKilometer
- 
-    @on_second = false
+
     @locationManager.startUpdatingLocation
 
     true
@@ -61,25 +60,23 @@ class DistanceBetweenViewController < UIViewController
     # If it's a relatively recent event, turn off updates to save power
     eventDate = newLocation.timestamp
     howRecent = eventDate.timeIntervalSinceNow
-
-    c = newLocation.coordinate
+    
     @label.text = "Found you!"
     @button.setTitle("Find Me", forState:UIControlStateNormal)
+    
+    c = newLocation.coordinate
     f = CGRectMake 10, (@height += 30), 300, 20
 
     @second = UILabel.alloc.initWithFrame f
     view.addSubview @second
-
-    @second.text = "..."
-    
     @second.text = "%.4f by %.4f" % [c.latitude, c.longitude]
     @second.text += " #{kilometers(@first.coordinate, newLocation.coordinate).to_s} Meters" if @first
+    
     @first = newLocation
     @locationManager.stopUpdatingLocation
   end
 
   def set2nd(whatever)
-    @on_second = true
     @label.text = "Calculating..."
 
     @locationManager.startUpdatingLocation
