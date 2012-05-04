@@ -1,7 +1,7 @@
 class DistanceBetweenViewController < UIViewController
   PIx = 3.141592653589793
   RADIO = 6371 # Mean radius of Earth in Km
-
+  
   def convertToRadians(val)
    return val * PIx / 180
   end
@@ -25,9 +25,10 @@ class DistanceBetweenViewController < UIViewController
   end
 
   def viewDidLoad
+    @height = 70
     view.backgroundColor = UIColor.whiteColor
 
-    f = CGRectMake 10, 118, 180, 20
+    f = CGRectMake 10, 20, 300, 20
 
     @label = UILabel.alloc.initWithFrame f
     view.addSubview @label
@@ -35,23 +36,13 @@ class DistanceBetweenViewController < UIViewController
     @label.text = "Calculating..."
 
     @button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-    @button.frame = CGRectMake 10, 140, 180, 20
+    @button.frame = CGRectMake 10, 50, 300, 20
     
-    @button.setTitle("Set 2nd Point", forState:UIControlStateNormal)
+    @button.setTitle("Find Me", forState:UIControlStateNormal)
 
     @button.addTarget(self , action:"set2nd:", forControlEvents:UIControlEventTouchDown)
-
+    
     view.addSubview @button
-    f = CGRectMake 10, 165, 180, 20
-
-    @second = UILabel.alloc.initWithFrame f
-    view.addSubview @second
-
-    @second.text = "..."
-
-    @show_km = UILabel.alloc.initWithFrame CGRectMake(10, 190, 180, 20)
-    @show_km.text = ""
-    view.addSubview @show_km
 
     # Create the location manager if this object does not
     # already have one.
@@ -72,21 +63,24 @@ class DistanceBetweenViewController < UIViewController
     howRecent = eventDate.timeIntervalSinceNow
 
     c = newLocation.coordinate
+    @label.text = "Found you!"
+    @button.setTitle("Find Me", forState:UIControlStateNormal)
+    f = CGRectMake 10, (@height += 30), 300, 20
 
-    if @on_second
-      @second.text = "%.4f by %.4f" % [c.latitude, c.longitude]
-      @show_km.text = kilometers(@first.coordinate, newLocation.coordinate).to_s
-    else
-      @first = newLocation
-      @label.text = "%.4f by %.4f" % [c.latitude, c.longitude]
-    end
+    @second = UILabel.alloc.initWithFrame f
+    view.addSubview @second
 
+    @second.text = "..."
+    
+    @second.text = "%.4f by %.4f" % [c.latitude, c.longitude]
+    @second.text += " #{kilometers(@first.coordinate, newLocation.coordinate).to_s} Meters" if @first
+    @first = newLocation
     @locationManager.stopUpdatingLocation
   end
 
   def set2nd(whatever)
     @on_second = true
-    @second.text = "Calculating..."
+    @label.text = "Calculating..."
 
     @locationManager.startUpdatingLocation
   end
