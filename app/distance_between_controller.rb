@@ -7,7 +7,6 @@ class DistanceBetweenViewController < UIViewController
   end
 
   include Math
-
   def kilometers(place1, place2)
     dlon = convertToRadians(place2.longitude - place1.longitude)
     dlat = convertToRadians(place2.latitude - place1.latitude)
@@ -27,6 +26,9 @@ class DistanceBetweenViewController < UIViewController
   def viewDidLoad
     @height = 70
     view.backgroundColor = UIColor.whiteColor
+    @mapView = MKMapView.alloc.initWithFrame(view.bounds)
+    @mapView.setShowsUserLocation("YES")
+    view.addSubview @mapView
 
     f = CGRectMake 10, 20, 300, 20
 
@@ -44,6 +46,8 @@ class DistanceBetweenViewController < UIViewController
 
     view.addSubview @button
 
+    # @map = MKMapView
+    # view.addSubview @map
     # Create the location manager if this object does not
     # already have one.
     @locationManager = CLLocationManager.alloc.init
@@ -65,8 +69,8 @@ class DistanceBetweenViewController < UIViewController
     @button.setTitle("Find Me", forState:UIControlStateNormal)
 
     c = newLocation.coordinate
+    setRegion(c)
     f = CGRectMake 10, (@height += 30), 300, 20
-
     @second = UILabel.alloc.initWithFrame f
     view.addSubview @second
     @second.text = "%.4f by %.4f" % [c.latitude, c.longitude]
@@ -74,6 +78,12 @@ class DistanceBetweenViewController < UIViewController
 
     @first = newLocation
     @locationManager.stopUpdatingLocation
+  end
+
+  def setRegion(c)
+    @span    = MKCoordinateSpan.new(0.1, 0.1)
+    @region  = MKCoordinateRegion.new(c, @span)
+    @mapView.setRegion(@region, animated: "YES")
   end
 
   def set2nd(whatever)
