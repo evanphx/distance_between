@@ -60,10 +60,10 @@ class DistanceBetweenViewController < UIViewController
     # If it's a relatively recent event, turn off updates to save power
     eventDate = newLocation.timestamp
     howRecent = eventDate.timeIntervalSinceNow
-    
+
     @label.text = "Found you!"
     @button.setTitle("Find Me", forState:UIControlStateNormal)
-    
+
     c = newLocation.coordinate
     f = CGRectMake 10, (@height += 30), 300, 20
 
@@ -71,7 +71,7 @@ class DistanceBetweenViewController < UIViewController
     view.addSubview @second
     @second.text = "%.4f by %.4f" % [c.latitude, c.longitude]
     @second.text += " #{kilometers(@first.coordinate, newLocation.coordinate).to_s} Meters" if @first
-    
+
     @first = newLocation
     @locationManager.stopUpdatingLocation
   end
