@@ -74,14 +74,14 @@ class DistanceBetweenViewController < UIViewController
     @second = UILabel.alloc.initWithFrame f
     view.addSubview @second
     @second.text = "%.4f by %.4f" % [c.latitude, c.longitude]
-    @second.text += " #{kilometers(@first.coordinate, newLocation.coordinate).to_s} Meters" if @first
+    @second.text += " %.2f" %  kilometers(@first.coordinate, newLocation.coordinate).to_s + "Km" if @first
 
     @first = newLocation
     @locationManager.stopUpdatingLocation
   end
 
   def setRegion(c)
-    @span    = MKCoordinateSpan.new(0.1, 0.1)
+    @span    = MKCoordinateSpan.new(0.02, 0.02)
     @region  = MKCoordinateRegion.new(c, @span)
     @mapView.setRegion(@region, animated: "YES")
   end
